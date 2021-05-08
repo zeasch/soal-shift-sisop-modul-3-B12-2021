@@ -11,7 +11,7 @@ long long int matrixnew[6][6];
 int a,b,ii=0,jj=0;
 void* fact(void *arg){
 int loca=a,locb=b,locii=ii,locjj=jj;
-	long long int hasil=a;
+	long long int hasil=loca;
 	if(loca!=0&&locb!=0){
 	if(loca>=locb)
     	{
@@ -42,9 +42,15 @@ int main(int argc,char *argv[])
 	int segid=shmget(key,sizeof(int)*4*6,IPC_CREAT|0666);
 	shmatrix=(int *)shmat(segid,NULL,0);
 	int inmatrix[30];
-
-printf("program 2 started\n");
-printf("input matriks (col=6,row=4)\n");
+    
+	printf("shared matrix\n");
+	for(int i=0;i<4;i++){
+    	for(int j=0;j<6;j++){
+            	printf("%d\t",shmatrix[i*6+j]);
+    	}
+    	printf("\n");
+    	}
+	printf("input matriks (col=6,row=4)\n");
 	for(int i=0;i<4;i++)
        	for(int j=0;j<6;j++)
            	scanf("%d",&inmatrix[i*6+j]);
@@ -77,4 +83,6 @@ printf("input matriks (col=6,row=4)\n");
     	}
     	printf("\n");
 	}
+	shmdt(shmatrix);
+	shmctl(segid,IPC_RMID,NULL);
 }
