@@ -2,7 +2,8 @@
 
 ## Soal 1
 ```
-Untuk source code tidak ditampilkan disini karena terlalu panjang, silahkan merujuk ke file dalam repositori. Sudah disediakan segmen-segmen kode program terkait 
+Untuk source code tidak ditampilkan disini karena terlalu panjang, silahkan merujuk ke file dalam repositori. 
+Sudah disediakan segmen-segmen kode program terkait 
 ```
 ### a. Register dan Login
 Register dilakukan dengan :
