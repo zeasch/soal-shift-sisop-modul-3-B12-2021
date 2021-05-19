@@ -2,8 +2,9 @@
 
 ## Soal 1
 ```
-Untuk source code tidak ditampilkan disini karena terlalu panjang, silahkan merujuk ke file dalam repositori. 
-Sudah disediakan segmen-segmen kode program terkait 
+Untuk source code tidak ditampilkan disini karena terlalu panjang, 
+silahkan merujuk ke file dalam repositori. 
+Sudah disediakan segmen-segmen kode program terkait.
 ```
 ### a. Register dan Login
 Register dilakukan dengan :
@@ -19,5 +20,11 @@ Login dilakukan dengan :
 4. Server akan mengecek ketersediaan username dan password.
 5. Jika ditemukan, Server menyimpan siapa yang sedang login dan mengirim pesan sukses login
 6. Jika tidak, server akan mengirim pesan login gagal
+
+[Foto]
+
+Kendala :
+1. Passing message dari server ke client (dan sebaliknya) terkadang gagal
+
 
 ### b. 
