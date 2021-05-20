@@ -54,4 +54,40 @@ Kendala :
 1. Proses read file pada server gagal
 2. Proses request iteratif secara bergantian gagal
 
-### d. 
+### d. Download
+Setelah file di tambahkan, tentunya kita dapat men-downloadnya.
+Berikut langkah - langkahnya :
+1. Client mengirim message "download namaFile.ekstensi" ke server.
+2. Server akan melakukan pengecekan apakah file yang dimaksud ada didalam files.tsv
+3. Jika tidak, Server akan mengirim message file tidak ditemukan.
+4. Jika ada, file akan dikirim ke client.
+5. Client menerima file dengan nama serta ekstensi yang sama
+6. Server akan mengirimkan message file berhasil diunduh kepada client.
+
+[Foto]
+
+Kendala :
+Alhamdulillah tidak ada karena proses unggah dan unduh persis dengan fungsi "add"
+
+### e. Delete
+Delete dapat dilakukan dengan cara :
+1. Client mengirimkan message "delete namaFile.ekstensi" kepada seerver.
+2. Sever akan mengecek apakah file tersedia.
+3. Jika tidak, server akan mengirim emssage bahwa file tidak ditemukan.
+4. Jika ada, server akan membuat file baru katakan "temp.tsv".
+5. Semua record yang ada dipindahkan dari files.tsv ke temp.tsv kecuali file yg ingin di delete.
+6. Server menghapus files.tsv.
+7. Server me-rename temp.tsv menjadi files.tsv.
+8. Server me-rename namaFile.ekstensi menjadi old-namaFile.ekstensi.
+9. Server mengirim message bahwa file telah dihapus kepada client.
+
+[Foto]
+
+Kendala :
+1. Program sempat gagal mengecualikan pemindahan menuju temp.tsv
+2. Program sempat gagal melakukan rename
+
+### f. See (Melihat Daftar Buku)
+Disini, untuk melakukan fungsi "see", dibutuhkan fungsi yang dapat memisahkan kata per kata yang dipisahkan oleh suatu karakter.
+Fungsi "see" dapat dilakukan dengan cara :
+1. 
