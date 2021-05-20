@@ -45,9 +45,11 @@ Dapat dilakukan dengan cara :
 9. Server mengirim pesan "Penambahan Berhasil" kepada client.
 
 Isi files.tsv :
+
 ![filestsv](https://i.imgur.com/xj55n53.png)
 
 Isi folder FILES :
+
 ![FILES](https://i.imgur.com/YYhsokY.png)
 
 Kendala :
@@ -90,4 +92,38 @@ Kendala :
 ### f. See (Melihat Daftar Buku)
 Disini, untuk melakukan fungsi "see", dibutuhkan fungsi yang dapat memisahkan kata per kata yang dipisahkan oleh suatu karakter.
 Fungsi "see" dapat dilakukan dengan cara :
-1. 
+1. Client mengirimkan message "see" kepada server.
+2. Server akan langsung membuka files.tsv
+3. Server menggunakan suatu variabel untuk menyimpan sekaligus smua yang ingin dikirim kepada client
+4. Pada tiap baris, ambil data - data yang diperlukan dengan memisahkan kata per kata dengan fungsi yang telah dibuat
+5. Sambungkan tiap data tiap baris dalam variabel yang sama
+6. Server mengirimkan variabel tersebut kepada client
+
+[Foto]
+
+Kendala :
+1. Proses menyambungkan pesan terjadi kesalahan
+
+### g. Find (Mencari Buku)
+Client mengirimkan message "find namaFile".
+Persis seperti fungsi "see", yang membedakan adalah dilakukan pengecekan terhadap nama file, apakah terdapat substring file yang dicari didalamnya.
+Jika ada, akan disambungkan dengan variabel yang akan dikirim ke client. Selebihnya adalah sama dengan fungsi "see".
+
+[Foto]
+
+Kendala :
+Alhamdulillah tidak ada karena cara yang digunakan persis seperti fungsi "see"
+
+### h. Membuat log
+Pada tiap fungsi "add" yang sukses, akan dilakukan penulisan running.log sebagai berikut :
+```c
+FILE* log = fopen("running.log", "a") ;
+fprintf(log, "Tambah : %s %s\n", fileName, loggedIn) ;
+fclose(log) ;
+```
+fileName adalah nama file dan loggedIn adalah id dan password akun yang sedang login dalam format (id:password)
+
+[Foto]
+
+Kendala :
+Alhamdulillah tidak ada, karena cukup mudah
