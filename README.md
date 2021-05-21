@@ -129,3 +129,318 @@ fileName adalah nama file dan loggedIn adalah id dan password akun yang sedang l
 
 Kendala :
 Alhamdulillah tidak ada, karena cukup mudah
+
+## Soal 3
+
+### a. Argumen -f
+Penjelasan:\
+Jika file tidak bisa dibuka atau file tidak ada maka akan menampilkan
+output gagal
+```c
+    DIR* testDir = opendir(pathToFile) ;
+    if (testDir) {
+        closedir(testDir) ;
+        return (void *) 0 ;
+    }
+    closedir(testDir) ;
+    
+    if(access(pathToFile, F_OK) == -1) {
+        return (void *) 0 ;
+    }
+```
+
+Mengambil extension file dari titik '.' terdepan. Jika titik terletak
+di depan maka file tersebut termasuk 'Hidden', selain itu jika
+file tidak memiliki extension maka file tersebut termasuk 'Unknown'
+```c
+    char* ext ;
+    if (strchr(buffer, '.')) {
+        char* test ;
+        if (test = strchr(buffer, '.') != buffer) {
+            ext = strchr(buffer, '.') + 1 ;
+            int i ;
+            for (i = 0 ; i < strlen(ext) ; i++) {
+                ext[i] = tolower(ext[i]) ;
+            }
+        }
+        else
+        {
+            ext = (char*) malloc (sizeof(char) * 100) ;
+            strcpy(ext, "Hidden") ;
+        } 
+    }
+    else {
+        ext = (char*) malloc (sizeof(char) * 100) ;
+        strcpy(ext, "Unknown") ;
+    }
+```
+
+Membuat folder dengan nama extension dari file dan memindahkan file
+tersebut ke folder yang sesuai dengan extension nya
+```c
+    mkdir(ext, 0777);
+    
+    char currentPath[12800] ;
+    bzero(currentPath, 12800) ;
+    getcwd(currentPath, 12800) ;
+    strcat(currentPath, "/") ; strcat(currentPath, ext) ; strcat(currentPath, "/") ; strcat(currentPath, fileName) ;
+    rename(pathToFile, currentPath) ;
+    return (void *) 1;
+```
+
+Membuat thread
+```c
+    if (!strcmp(argv[1], "-f")) {
+        tid = (pthread_t*) malloc (sizeof(pthread_t) * (argc)) ; 
+        int i ;
+        for (i = 2 ; i < argc ; i++) {
+            pthread_create(&(tid[i - 2]),NULL,&commandF,argv[i]) ;
+        }
+
+        for (i = 2 ; i < argc ; i++) {
+            int returnValue;
+            void *ptr;
+            pthread_join(tid[i - 2], &ptr) ;
+            returnValue = (int) ptr;
+            if (returnValue) printf("File %d: Berhasil Dikategorikan\n", i-1);
+            else printf("File %d: Sad, gagal :(\n", i-1);
+        }
+    }
+```
+
+Hasil:\
+Sebelum
+![3a1](https://imgur.com/jJgw1pg.png)\
+Sesudah\
+![3a2](https://imgur.com/jxuUGdD.png)
+![3a3](https://imgur.com/ip3ioKz.png)
+
+Kendala:
+1. Output tidak urut sesuai urutan argumen
+2. Output 'File %d' kurang benar
+3. Kesalahan pada conditional if-else di fungsi main
+4. Segmentation fault
+
+### b. Argumen -d
+Penjelasan:\
+Mengambil semua file di dalam sebuah direktori secara rekursif
+```c
+void listFilesRecursively(char *basePath)
+{
+    struct dirent *dp;
+    DIR *dir = opendir(basePath);
+
+    if (!dir)
+        return;
+
+    char filePath[10240] ;
+    while ((dp = readdir(dir)) != NULL)
+    {
+        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0)
+        {
+            strcpy(filePath, basePath);
+            strcat(filePath, "/");
+            strcat(filePath, dp->d_name);
+            if(dp->d_type & DT_DIR) {
+                listFilesRecursively(filePath);
+            }
+            else {
+                strcpy(filePaths[counter++], filePath) ;
+            }
+
+
+        }
+    }
+
+    closedir(dir);
+}
+```
+
+Mengambil extension file dari titik '.' terdepan. Jika titik terletak
+di depan maka file tersebut termasuk 'Hidden', selain itu jika
+file tidak memiliki extension maka file tersebut termasuk 'Unknown'.
+```c
+    char* ext ;
+    if (strchr(buffer, '.')) {
+        char* test ;
+        if (test = strchr(buffer, '.') != buffer) {
+            ext = strchr(buffer, '.') + 1 ;
+            int i ;
+            for (i = 0 ; i < strlen(ext) ; i++) {
+                ext[i] = tolower(ext[i]) ;
+            }
+        }
+        else
+        {
+            ext = (char*) malloc (sizeof(char) * 100) ;
+            strcpy(ext, "Hidden") ;
+        } 
+    }
+    else {
+        ext = (char*) malloc (sizeof(char) * 100) ;
+        strcpy(ext, "Unknown") ;
+    }
+```
+
+Membuat folder dengan nama extension dari file dan memindahkan file
+tersebut ke folder yang sesuai dengan extension nya.
+```c
+    mkdir(ext, 0777);
+
+    char currentPath[12800] ;
+    bzero(currentPath, 12800) ;
+    getcwd(currentPath, 12800) ;
+    strcat(currentPath, "/") ; strcat(currentPath, ext) ; strcat(currentPath, "/") ; strcat(currentPath, fileName) ;
+    rename(pathToFile, currentPath) ;
+```
+
+Membuat thread
+```c
+    else if (!strcmp(argv[1], "-d")) {
+        
+        tid = (pthread_t*) malloc (sizeof(pthread_t) * 1024) ;
+        int i ;
+        for (i = 0 ; i < 1024 ; i++) {
+            filePaths[i] = (char*) malloc (sizeof(char) * 1024) ;
+        }
+
+        struct dirent *dp;
+        DIR *dir = opendir(argv[2]);
+        if (dir)
+        {
+            closedir(dir);
+            listFilesRecursively(argv[2]) ;
+
+            for (i = 0 ; i < counter ; i++) {
+            pthread_create(&(tid[i]),NULL,&commandD,filePaths[i]) ;
+            }
+
+            for (i = 0 ; i < counter ; i++) {
+            pthread_join(tid[i], NULL) ;
+            }
+            printf("Direktori sukses disimpan!\n");
+        }
+            
+        else printf("Yah, gagal disimpan :(\n");
+    }
+```
+Hasil:\
+Sebelum
+![3b1](https://imgur.com/K8ujVHk.png)\
+Sesudah\
+![3b2](https://imgur.com/P8aq72A.png)
+![3b3](https://imgur.com/0L5M6nT.png)
+
+Kendala:
+1. Beberapa file tidak terkategorikan
+2. Program tidak dapat berjalan secara paralel
+3. Segmentation fault
+
+### c. Argumen \\*
+Penjelasan:\
+Mengambil semua file di dalam working directory secara rekursif
+```c
+void listFilesRecursively(char *basePath)
+{
+    struct dirent *dp;
+    DIR *dir = opendir(basePath);
+
+    if (!dir)
+        return;
+
+    char filePath[10240] ;
+    while ((dp = readdir(dir)) != NULL)
+    {
+        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0)
+        {
+            strcpy(filePath, basePath);
+            strcat(filePath, "/");
+            strcat(filePath, dp->d_name);
+            if(dp->d_type & DT_DIR) {
+                listFilesRecursively(filePath);
+            }
+            else {
+                strcpy(filePaths[counter++], filePath) ;
+            }
+
+
+        }
+    }
+
+    closedir(dir);
+}
+```
+
+Mengambil extension file dari titik '.' terdepan. Jika titik terletak
+di depan maka file tersebut termasuk 'Hidden', selain itu jika
+file tidak memiliki extension maka file tersebut termasuk 'Unknown'.
+```c
+    char* ext ;
+    if (strchr(buffer, '.')) {
+        char* test ;
+        if (test = strchr(buffer, '.') != buffer) {
+            ext = strchr(buffer, '.') + 1 ;
+            int i ;
+            for (i = 0 ; i < strlen(ext) ; i++) {
+                ext[i] = tolower(ext[i]) ;
+            }
+        }
+        else
+        {
+            ext = (char*) malloc (sizeof(char) * 100) ;
+            strcpy(ext, "Hidden") ;
+        } 
+    }
+    else {
+        ext = (char*) malloc (sizeof(char) * 100) ;
+        strcpy(ext, "Unknown") ;
+    }
+```
+
+Membuat folder dengan nama extension dari file dan memindahkan file
+tersebut ke folder yang sesuai dengan extension nya.
+```c
+    mkdir(ext, 0777);
+
+    char currentPath[12800] ;
+    bzero(currentPath, 12800) ;
+    getcwd(currentPath, 12800) ;
+    strcat(currentPath, "/") ; strcat(currentPath, ext) ; strcat(currentPath, "/") ; strcat(currentPath, fileName) ;
+    rename(pathToFile, currentPath) ;
+```
+
+Membuat thread
+```c
+    else
+    {
+        tid = (pthread_t*) malloc (sizeof(pthread_t) * 1024) ;
+        int i ;
+        for (i = 0 ; i < 1024 ; i++) {
+            filePaths[i] = (char*) malloc (sizeof(char) * 1024) ;
+        }
+
+        char ambilwd[1000];
+        getcwd(ambilwd, sizeof(ambilwd));
+        listFilesRecursively(ambilwd) ;
+        
+        for (i = 0 ; i < counter ; i++) {
+            pthread_create(&(tid[i]),NULL,&commandD,filePaths[i]) ;
+        }
+
+        for (i = 0 ; i < counter ; i++) {
+            pthread_join(tid[i], NULL) ;
+        }
+    }
+```
+
+Hasil:\
+Sebelum
+![3c1](https://imgur.com/yI0xTcJ.png)\
+Sesudah\
+![3c2](https://imgur.com/ZEPogKU.png)
+![3c3](https://imgur.com/es9ngC6.png)
+
+Kendala:
+1. Beberapa file tidak terkategorikan
+2. Program tidak dapat berjalan secara paralel
+3. Segmentation fault
