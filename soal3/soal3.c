@@ -61,8 +61,11 @@ void* commandF(void* arg) {
                 ext[i] = tolower(ext[i]) ;
             }
         }
-        else 
+        else
+        {
+            ext = (char*) malloc (sizeof(char) * 100) ;
             strcpy(ext, "Hidden") ;
+        } 
     }
     else {
         ext = (char*) malloc (sizeof(char) * 100) ;
