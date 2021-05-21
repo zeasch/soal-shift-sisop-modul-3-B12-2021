@@ -13,7 +13,7 @@
 #include <sys/time.h>
 #include <ctype.h>
 
-char buffer[10240] ;
+//char buffer[10240] ;
 pthread_t* tid ;
 char* filePaths[10240] ;
 
@@ -44,6 +44,7 @@ void* commandF(void* arg) {
     }
 
     char fileName[64] ;
+    char buffer[1024];
 
     bzero(buffer, 1024) ;
     strcpy(buffer, pathToFile) ;
@@ -84,11 +85,14 @@ void* commandD(void* arg) {
     char* pathToFile = (char*) arg ;
     //printf("FILE:%s\n", pathToFile) ;
     char fileName[10240] ;
+    char buffer[10240];
 
     bzero(buffer, 10240) ;
     strcpy(buffer, pathToFile) ;
     parseSlash(buffer, fileName) ;
     strcpy(buffer, fileName) ;
+
+    //printf("%s", fileName);
 
     char* ext ;
     if (strchr(buffer, '.')) {
@@ -120,7 +124,7 @@ void* commandD(void* arg) {
     bzero(currentPath, 12800) ;
     getcwd(currentPath, 12800) ;
     strcat(currentPath, "/") ; strcat(currentPath, ext) ; strcat(currentPath, "/") ; strcat(currentPath, fileName) ;
-    // printf("--\n%s\n%s\n", pathToFile, currentPath) ;
+    //printf("--\n%s\n", currentPath) ;
     rename(pathToFile, currentPath) ;
     
 }
@@ -227,8 +231,12 @@ int main(int argc, char* argv[]) {
         for (i = 0 ; i < counter ; i++) {
             // printf("%s\n", filePaths[i]) ;
             pthread_create(&(tid[i]),NULL,&commandD,filePaths[i]) ;
-            pthread_join(tid[i], NULL) ;
+            //pthread_join(tid[i], NULL) ;
 
         }
+
+        for (i = 0 ; i < counter ; i++) {
+            pthread_join(tid[i], NULL) ;
+            }
     }
 }
