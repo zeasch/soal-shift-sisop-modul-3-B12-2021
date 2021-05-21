@@ -43,10 +43,10 @@ void* commandF(void* arg) {
         return (void *) 0 ;
     }
 
-    char fileName[64] ;
-    char buffer[1024];
+    char fileName[10240] ;
+    char buffer[10240];
 
-    bzero(buffer, 1024) ;
+    bzero(buffer, 10240) ;
     strcpy(buffer, pathToFile) ;
     parseSlash(buffer, fileName) ;
     strcpy(buffer, fileName) ;
@@ -71,9 +71,9 @@ void* commandF(void* arg) {
     // printf("%s\n", exts) ;
     mkdir(ext, 0777);
 
-    char currentPath[128] ;
-    bzero(currentPath, 128) ;
-    getcwd(currentPath, 128) ;
+    char currentPath[12800] ;
+    bzero(currentPath, 12800) ;
+    getcwd(currentPath, 12800) ;
     strcat(currentPath, "/") ; strcat(currentPath, ext) ; strcat(currentPath, "/") ; strcat(currentPath, fileName) ;
     // printf("--\n%s\n%s\n", pathToFile, currentPath) ;
     rename(pathToFile, currentPath) ;
