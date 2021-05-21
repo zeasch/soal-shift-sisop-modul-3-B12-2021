@@ -46,7 +46,7 @@ Dapat dilakukan dengan cara :
 
 Isi files.tsv :
 
-![filestsv](https://i.imgur.com/xj55n53.png)
+![filestsv](https://i.imgur.com/SeWLuqx.png)
 
 Isi folder FILES :
 
@@ -66,8 +66,6 @@ Berikut langkah - langkahnya :
 5. Client menerima file dengan nama serta ekstensi yang sama
 6. Server akan mengirimkan message file berhasil diunduh kepada client.
 
-[Foto]
-
 Kendala :
 Alhamdulillah tidak ada karena proses unggah dan unduh persis dengan fungsi "add"
 
@@ -83,7 +81,7 @@ Delete dapat dilakukan dengan cara :
 8. Server me-rename namaFile.ekstensi menjadi old-namaFile.ekstensi.
 9. Server mengirim message bahwa file telah dihapus kepada client.
 
-[Foto]
+Untuk gambar hasil bisa dilihat pada sub soal c (add). Disana terdapat file dengan awalan old- dan tidak tercantum dalam files.tsv
 
 Kendala :
 1. Program sempat gagal mengecualikan pemindahan menuju temp.tsv
@@ -99,7 +97,9 @@ Fungsi "see" dapat dilakukan dengan cara :
 5. Sambungkan tiap data tiap baris dalam variabel yang sama
 6. Server mengirimkan variabel tersebut kepada client
 
-[Foto]
+Masih dalam sistem yang sama, berikut penampakan fungsi "see" :
+
+![see](https://i.imgur.com/7dxCErr.png)
 
 Kendala :
 1. Proses menyambungkan pesan terjadi kesalahan
@@ -109,7 +109,9 @@ Client mengirimkan message "find namaFile".
 Persis seperti fungsi "see", yang membedakan adalah dilakukan pengecekan terhadap nama file, apakah terdapat substring file yang dicari didalamnya.
 Jika ada, akan disambungkan dengan variabel yang akan dikirim ke client. Selebihnya adalah sama dengan fungsi "see".
 
-[Foto]
+Tampak pula fungsi find yang hanya menampilkan buku yang mengandung substring yang diminta
+
+![find](https://i.imgur.com/89OOzVo.png)
 
 Kendala :
 Alhamdulillah tidak ada karena cara yang digunakan persis seperti fungsi "see"
@@ -123,7 +125,7 @@ fclose(log) ;
 ```
 fileName adalah nama file dan loggedIn adalah id dan password akun yang sedang login dalam format (id:password)
 
-[Foto]
+![log](https://i.imgur.com/D394g5N.png)
 
 Kendala :
 Alhamdulillah tidak ada, karena cukup mudah
