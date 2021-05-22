@@ -129,7 +129,184 @@ fileName adalah nama file dan loggedIn adalah id dan password akun yang sedang l
 
 Kendala :
 Alhamdulillah tidak ada, karena cukup mudah
+## Soal 2
+### a.
+Membuat program perkalian matriks 4x3 dan 3x6 dan menampilkan hasilnya lalu matriks hasil dikirim ke program kedua.<br><br>
+```c
+int y1=4,x1=3,y2=3,x2=6;
+int mat1[6][6];//input mat1
+int mat2[6][6];//input mat2
+int *matrix;
+int segid;
+key_t key=1234;
+segid=shmget(key,sizeof(int)*x2*y1,IPC_CREAT|0666);
+matrix = (int *)shmat(segid,NULL,0);
+```
+deklarasi variabel-variabel dan juga array matrix yang akan digunakan untuk menyimpan hasil perkalian matriks dan mengirimnya ke program kedua.<br><br>
 
+```c
+for(int i=0;i<y1;i++)
+   	for(int j=0;j<x1;j++)
+       	scanf("%d",&mat1[i][j]);
+
+for(int i=0;i<y2;i++)
+   	for(int j=0;j<x2;j++)
+       	scanf("%d",&mat2[i][j]);
+```
+menginput matriks pertama dan kedua.<br><br>
+```c
+for(int i=0;i<y1;i++)
+   	for(int j=0;j<x2;j++){
+       	matrix[i*x2+j]=0;
+       	for(int k=0;k<x1;k++)
+           	matrix[i*x2+j]+=mat1[i][k]*mat2[k][j];
+       	}
+printf("matriks hasil perkalian\n");
+for(int i=0;i<y1;i++){
+	for(int j=0;j<x2;j++){
+       	printf("%d\t",matrix[i*x2+j]);
+       	}
+   	printf("\n");
+    	}
+```
+melakukan perkalian dan menunjukkan hasilnya. Setelah itu program di sleep selama 30 detik untuk memberi waktu untuk inputan program kedua.<br><br>
+Kendala :
+Mencari cara mengirim sebuah matriks melalui shared memory
+### b.
+membuat program yang menerima matriks hasil program pertama dan selanjutnya melakukan perhitungan dengan matriks inputan baru.<br><br>
+```c
+key_t key=1234;
+	int *shmatrix;
+	int segid=shmget(key,sizeof(int)*4*6,IPC_CREAT|0666);
+	shmatrix=(int *)shmat(segid,NULL,0);
+	int inmatrix[30];
+```
+deklarasi array inputan,array dari shared memory dan key yang sama dengan program pertama.<br><br>
+```c
+
+	for(int i=0;i<4;i++){
+    	for(int j=0;j<6;j++){
+            	printf("%d\t",shmatrix[i*6+j]);
+    	}
+    	printf("\n");
+    	}
+
+	for(int i=0;i<4;i++)
+       	for(int j=0;j<6;j++)
+           	scanf("%d",&inmatrix[i*6+j]);
+```
+menunjukkan matriks yang diterima dari program pertama dan juga melakukan input matriks untuk perhitungan.<br><br>
+```c
+int count=0;
+	while(count<25)
+	{
+	a=shmatrix[ii*6+jj];
+	b=inmatrix[ii*6+jj];
+	pthread_create(&(tid[count]),NULL,&fact,NULL);
+	usleep(500);
+	if(jj==5)
+    	{
+    	ii++;
+    	jj=0;
+    	}
+	else
+    	jj++;
+
+	count++;
+	}
+```
+membuat thread untuk perhitungan setiap cell matriks, terdapat 24 cell sehingga membutuhkan 24 thread. argumen untuk fungsi fact menggunakan variabel global. variabel ii dan jj berawal dengan nilai 0 dan digunakan untuk menunjuk anggota array yang akan digunakan.<br><br>
+```c
+void* fact(void *arg){
+int loca=a,locb=b,locii=ii,locjj=jj;
+	long long int hasil=loca;
+	if(loca!=0&&locb!=0){
+	if(loca>=locb)
+    	{
+    	int j=1;
+    	for(int i=loca-1;j<locb;j++,i--)
+        	{
+        	hasil=hasil*i;
+        	}
+    	matrixnew[locii][locjj]=hasil;
+    	}
+	else if(locb>loca)
+    	{
+    	for(int i=loca-1;i>0;i--)
+        	{
+        	hasil=hasil*i;
+        	}
+    	matrixnew[locii][locjj]=hasil;
+    	}
+	}
+	else matrixnew[locii][locjj]=0;
+
+}
+```
+nilai-nilai variabel global disimpan ke variabel local dan selanjutnya dilakukan perhitungannya.<br><br>
+```c
+for(int i=0;i<25;i++)
+    	pthread_join(tid[i],NULL);
+
+	printf("hasil\n");
+	for(int i=0;i<4;i++){
+    	for(int j=0;j<6;j++){
+        	printf("%lld\t\t",matrixnew[i][j]);
+    	}
+    	printf("\n");
+	}
+	shmdt(shmatrix);
+	shmctl(segid,IPC_RMID,NULL);
+}
+```
+dilakukan pthread_join agar memastikan semua thread telah selesai lalu matriks hasil perhitungan ditunjukkan.<br>
+Kendala :<br>
+1. Mencari cara mengirim argumen ke fungsi thread tanpa harus menggunakan struct.<br>
+2. Segmentation fault
+
+### c.
+Membuat program yang melakukan perintah ```ps aux | sort -nrk 3,3 | head -5``` menggunakan IPC pipes
+```c
+int main(){
+  pipe(pipe1);
+  pipe(pipe2);
+ if (fork()==0)
+	one();
+ if (fork()==0)
+	two();
+  close(pipe1[0]);
+  close(pipe1[1]);
+  if (fork()==0)
+	three();
+}
+```
+membuat tiga fungsi yang menjalankan exec yang berisi perintah-perintah yang dibutuhkan. 
+```c
+void one(){
+  dup2(pipe1[1], 1);
+  close(pipe1[0]);
+  close(pipe1[1]);
+  execlp("ps", "ps", "aux",NULL);
+}
+void two(){
+  dup2(pipe1[0], 0);
+  dup2(pipe2[1], 1);
+  close(pipe1[0]);
+  close(pipe1[1]);
+  close(pipe2[0]);
+  close(pipe2[1]);
+  execlp("sort","sort","-nrk","3,3", NULL);
+}
+void three(){
+  dup2(pipe2[0], 0);
+  close(pipe2[0]);
+  close(pipe2[1]);
+  execlp("head", "head","-5", NULL);
+}
+```
+fungsi ```dup2()``` dapat mengarahkan input dan output. ```dup2(pipe,1)``` berarti mengarahkan output ke pipe dan ```dup2(pipe,0)``` berarti mendapatkan input dari pipe,<br> 
+Kendala :
+Tidak ada, karena mirip dengan latihan soal ke-2
 ## Soal 3
 
 ### a. Argumen -f
