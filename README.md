@@ -170,8 +170,10 @@ for(int i=0;i<y1;i++){
     	}
 ```
 melakukan perkalian dan menunjukkan hasilnya. Setelah itu program di sleep selama 30 detik untuk memberi waktu untuk inputan program kedua.<br><br>
+![a](https://i.imgur.com/VZBLZgh.png)<br><br>
 Kendala :
 Mencari cara mengirim sebuah matriks melalui shared memory
+
 ### b.
 membuat program yang menerima matriks hasil program pertama dan selanjutnya melakukan perhitungan dengan matriks inputan baru.<br><br>
 ```c
@@ -260,6 +262,7 @@ for(int i=0;i<25;i++)
 }
 ```
 dilakukan pthread_join agar memastikan semua thread telah selesai lalu matriks hasil perhitungan ditunjukkan.<br>
+![b](https://i.imgur.com/OM08PI5.png)
 Kendala :<br>
 1. Mencari cara mengirim argumen ke fungsi thread tanpa harus menggunakan struct.<br>
 2. Segmentation fault
@@ -304,9 +307,11 @@ void three(){
   execlp("head", "head","-5", NULL);
 }
 ```
-fungsi ```dup2()``` dapat mengarahkan input dan output. ```dup2(pipe,1)``` berarti mengarahkan output ke pipe dan ```dup2(pipe,0)``` berarti mendapatkan input dari pipe,<br> 
+fungsi ```dup2()``` dapat mengarahkan input dan output. ```dup2(pipe,1)``` berarti mengarahkan output ke pipe dan ```dup2(pipe,0)``` berarti mendapatkan input dari pipe. Output adalah 5 proses yang menggunakan paling banyak persentase cpu.<br> 
+![c](https://i.imgur.com/Pu0lOIn.png)
 Kendala :
 Tidak ada, karena mirip dengan latihan soal ke-2
+
 ## Soal 3
 
 ### a. Argumen -f
